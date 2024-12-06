@@ -1,0 +1,648 @@
+<!-- Step 6: Create templates in booking/templates/booking/event_list.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'images/flaticon.jpg' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+        
+        /* General styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background: #343434;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2rem;
+        }
+
+        nav {
+            text-align: center;
+            background: #808080;
+            
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            padding: 7px 14px;
+            background: #28A745;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background: #333333;
+            border-radius: 4px;
+        }
+.alert-container {
+    margin: 20px auto;
+    max-width: 400px;
+    text-align: center;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alert.error {
+    background-color: rgba(255, 0, 0, 0.2); /* Light red */
+    color: #d9534f;
+    border: 1px solid #d9534f;
+}
+
+.alert.success {
+    background-color: rgba(0, 255, 0, 0.2); /* Light green */
+    color: #5cb85c;
+    border: 1px solid #5cb85c;
+}
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+  .mines{
+      color: #4CAF50;
+      font-size:22px;
+      font-style: italic;
+      
+        }
+        .container h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+
+        .event-card h3 {
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        .event-card p {
+            margin: 5px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #4CAF50;
+            text-decoration: none;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #333333;
+        }
+
+        footer {
+            text-align: center;
+            background: #333;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            nav {
+                display: flex;
+                flex-direction: column;
+            }
+
+            nav a {
+                margin: 5px 0;
+                font-size: 1.1rem;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            header p {
+                font-size: 0.9rem;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+{#       hero section styling#}
+.hero-section {
+    
+    height: 70vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    transition: background-image 1s ease-in-out; /* Smooth transition for background change */
+}
+
+.hero-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay for text visibility */
+    z-index: 1;
+}
+
+.hero-content {
+    z-index: 2; /* To position the content above the overlay */
+    max-width: 600px;
+    margin: auto;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+.hero-content .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.hero-content .btn:hover {
+    background-color: black;
+}
+{#ticketreason section#}
+.ticket-source-section {
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px;
+    gap: 30px;
+    background-color: #fff;
+}
+
+.illustration img {
+    width: 300px;
+    height: auto;
+    border-radius: 5px 3px 12px 5px;
+}
+
+.content {
+    max-width: 500px;
+}
+
+.content h2 {
+    font-size: 24px;
+    color: #002b4c;
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #333;
+}
+/* Media Queries */
+
+/* Medium screens (tablets, 768px and above) */
+@media (max-width: 1024px) {
+    .ticket-source-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .illustration img {
+        width: 250px;
+    }
+
+    .content {
+        max-width: 100%;
+    }
+
+    .content h2 {
+        font-size: 22px;
+    }
+
+    .content p {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
+
+/* Small screens (phones, 576px and below) */
+@media (max-width: 576px) {
+    .ticket-source-section {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .illustration img {
+        width: 200px;
+    }
+
+    .content h2 {
+        font-size: 20px;
+    }
+
+    .content p {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+}
+{#testimonials#}
+
+.testimonials-section {
+    text-align: center;
+    padding: 10px;
+}
+
+.testimonials-section h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #4CAF50;
+}
+
+.testimonials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.testimonial-card {
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    padding: 3px;
+    text-align: center;
+}
+
+.profile-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.rating {
+    color: #ffcc00;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.testimonial-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.testimonial-card span {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Footer Styles */
+.footer {
+  background-color:  #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+    
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 8px 34px;
+  gap: 15px;
+}
+
+.footer-logo h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.footer-logo p {
+  font-size: 14px;
+  color: #ddd;
+}
+
+.footer-links h3,
+.footer-contact h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+    text-decoration: none;
+}
+
+.footer-links ul li {
+  margin-bottom: 8px;
+    text-decoration: none;
+}
+
+.footer-links ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer-links ul li a:hover {
+  color: black;
+}
+
+.footer-contact p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  font-size: 12px;
+  color: #bbb;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-contact,
+  .footer-links,
+  .footer-logo {
+    text-align: center;
+  }
+}
+        
+      
+
+    </style>
+  
+    <title>Virtual_Vibe</title>
+     {% block styles %}{% endblock %}
+</head>
+<body>
+{% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+  
+    <header>
+        <img src="{% static 'images/flaticon.jpg' %}" alt="Header Image" style="width:5%; height:5%;">
+        <h1>Virtual_Vibe Productions</h1>
+        <p>Creating unforgettable virtual experiences that connect, engage, and inspire audiences worldwide</p>
+    </header>
+
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'event_list' %}">Events</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact_us' %}">Contact</a>
+          
+          
+          {% if user.is_authenticated %}
+        <p class="mines">Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-success">Login</a> | <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+    {% endif %}
+          
+    </nav>
+    {% block content %}  
+<main class="hero-section">
+    <div class="hero-content">
+        <h1>Welcome to Virtual_Vibe</h1>
+        <p>Your one-stop solution for discovering and booking amazing events near you.</p>
+        <a href="{% url 'event_list' %}" class="btn">Explore Events</a>
+    </div>
+</main>
+    
+    
+    <section class="ticket-source-section">
+        <div class="illustration">
+            <!-- Illustration of the person -->
+            <img src="{% static 'images/music.jpg' %}" alt="Person with hula hoop">
+        </div>
+        <div class="content">
+            <h2>Why use Virtual_vibe?</h2>
+            <p>
+                We’ve been in your shoes, experienced the same event booking challenges and scaled the same booking peaks, 
+                so we’ve designed our booking system to be simple, cost-and-drama-free... basically, we get it.
+            </p>
+            <button>How it works</button>
+        </div>
+    </section>
+    <section class="testimonials-section">
+        <h2>What our customers say...</h2>
+        <div class="testimonials">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card">
+                <div class="profile-icon">👤</div>
+                <div class="rating">★★★★★</div>
+                <p>
+                    Using this platform has completely transformed how I organize events. The interface is so intuitive 
+                    that setting up events and managing bookings feels effortless. I especially love the real-time updates and notifications—it
+                    ensures I never miss a thing. Highly recommend this for anyone looking to simplify event management!
+                </p>
+                <span>- Jenny. Event organizer</span>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card">
+                <div class="profile-icon">👤</div>
+                <div class="rating">★★★★★</div>
+                <p>
+                    What sets this platform apart is the customer support—they are quick, helpful, and genuinely care about your experience. 
+                    The features are also top-notch, from customizable event pages to detailed analytics that help me 
+                    understand my audience better. I’ve seen a noticeable increase in attendance since I started using this!
+                </p>
+                <span>- Justine Smith. Workshop Coordinator</span>
+            </div>
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card">
+                <div class="profile-icon">👤</div>
+                <div class="rating">★★★★★</div>
+                <p>
+                   This system has made my life so much easier. The integration of ticketing, attendee tracking, and payment processing in one place is brilliant. It’s fast, secure, and everything works seamlessly. 
+                    My attendees often compliment how smooth the booking process is. It’s the best decision I’ve made for my events!
+                </p>
+                <span>- Vivienne Taylor. Conference Host</span>
+            </div>
+        </div>
+    </section>
+    
+    {% endblock %}
+    
+    
+    <!-- Footer Section -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-logo">
+      <h2><i>Virtual_vibe</i></h2>
+      <p>Creating unforgettable virtual experiences that connect, engage, and inspire audiences worldwide.</p>
+    </div>
+
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'event_list' %}">Events</a></li>
+        <li><a href="{% url 'contact_us' %}">Contact</a></li>
+        <li><a href="#">Support</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-contact">
+      <h3>Contact Us</h3>
+      <p>Email: ideas8613@gmail.com</p>
+      <p>Phone: +123-456-7890</p>
+      <p>Location: Nairobi, Kenya</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+      <p>&copy; 2024 <i>Virtual_Vibe</i>. All rights reserved.</p>
+  </div>
+</footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const heroSection = document.querySelector('.hero-section');
+    
+    // Array of image URLs
+    const backgroundImages = [
+        "{% static 'images/music.avif' %}",
+        "{% static 'images/tech.avif' %}",
+        "{% static 'images/art.avif' %}",
+        "{% static 'images/conference.avif' %}" // Add more image paths if needed
+    ];
+
+    let currentImageIndex = 0;
+
+    // Function to change background image
+    const changeBackgroundImage = () => {
+        heroSection.style.backgroundImage = `url(${backgroundImages[currentImageIndex]})`;
+        
+        // Update index for next image
+        currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+    };
+
+    // Change background every 5 seconds (5000ms)
+    setInterval(changeBackgroundImage, 5000);
+
+    // Set initial background image
+    changeBackgroundImage();
+});
+
+    </script>
+</body>
+</html>
