@@ -1,36 +1,20 @@
-{% extends 'base.html' %}
-{% load static %}
-
-
-<div class="container">
-
-    <div class="row">
-
-
-              <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-                    <strong>{{message}}</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-
-        <div class="col-md-5">
-
-            <form method="POST" action="{% url 'Events:pay'%}">
-                {% csrf_token %}
-
-                <label class="form-label mt-5">Phone Number</label>
-                <input type="number" name="phone" value="254" class="form-control">
-
-                <label class="form-label mt-5">Amount</label>
-                <input type="number" name="amount" class="form-control">
-
-                <input type="submit" name="submit" class="form-control mt-5 btn btn-success" value="pay">
-            </form>
-
-        </div>
-
-        <div class="col-md-7">
-
-        </div>
-
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Check-out</title>
+</head>
+<body>
+    <h2>Payment Details</h2>
+    <p>Event: {{ event.name }}</p>
+    <p>Total Price: Ksh {{ event.total_price }}</p>
+    
+    <!-- M-Pesa payment button (you could add more payment methods here) -->
+    <form action="{% url 'mpesa_payment' event_id=event.id %}" method="POST">
+        {% csrf_token %}
+        <label for="mpesa_number">Enter your M-Pesa number:</label>
+        <input type="text" name="mpesa_number" required>
+        <button type="submit" class="btn btn-success">Pay with M-Pesa</button>
+    </form>
+    
+</body>
+</html>

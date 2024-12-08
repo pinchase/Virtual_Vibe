@@ -30,7 +30,7 @@
 
         <p>Total Price: $<span id="total_price">{{ event.price }}</span></p>
 
-        <button type="submit">Book Now</button>
+        <button type="submit" class="btn-submit"><a href="{% url 'pay' %}" class="button">Proceed to Pay</a></button>
     </form>
 
     <script>

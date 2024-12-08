@@ -1,14 +1,11 @@
-# Step 3: Create models in booking/models.py
 from django.db import models
 import datetime
-from django.template.defaultfilters import default
-
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
     location = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=100, decimal_places=0, default=0)  # Price field
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Price field
     description = models.TextField()
 
 class Booking(models.Model):
@@ -16,11 +13,8 @@ class Booking(models.Model):
     user_name = models.CharField(max_length=100)
     user_email = models.EmailField()
     number_of_tickets = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    # booking_date = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now)
-    booking_date = models.DateTimeField(auto_now_add=True)
-
-    # When the booking was made
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, db_column='total_price')
+    # booking_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user_name} - {self.event.title} - {self.number_of_tickets} tickets"
+        return f"{self.user_name} - {self.event.name} - {self.number_of_tickets} tickets"

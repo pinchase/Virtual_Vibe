@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from .models import Event, Booking
 from django.contrib.auth.models import User
 
-from django.http import HttpResponse
+from django.http import  JsonResponse
 import requests
 from requests.auth import HTTPBasicAuth
 import json
@@ -34,7 +34,7 @@ def book_event(request, event_id):
         )
         booking.save()
 
-        return redirect('event_list')
+        return redirect('pay', event_id=event.id)
 
     # For GET request, render the template
     print("GET request received.")
@@ -42,42 +42,15 @@ def book_event(request, event_id):
 
 
 
-def pay(request):
-    # return render(request, 'pay.html', {'event_id': event_id})
-    if request.method == "POST":
-        phone = request.POST['phone']
-        amount = request.POST['amount']
-        access_token = MpesaAccessToken.validated_mpesa_access_token
-        api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
-        headers = {"Authorization": f"Bearer {access_token}"}
+def pay(request,event_id):
 
-        # Create the request payload
-        payload = {
-            "BusinessShortCode": LipanaMpesaPpassword.Business_short_code,
-            "Password": LipanaMpesaPpassword.decode_password,
-            "Timestamp": LipanaMpesaPpassword.lipa_time,
-            "TransactionType": "CustomerPayBillOnline",
-            "Amount": amount,
-            "PartyA": phone,
-            "PartyB": LipanaMpesaPpassword.Business_short_code,
-            "PhoneNumber": phone,
-            "CallBackURL": "https://yourserver.com/callback",  # Update with your actual callback URL
-            "AccountReference": "kagiri Peterson",
-            "TransactionDesc": "Event payment Charges"
-        }
-        return render(request, 'pay.html', )
-        # Send the request to the API
-        response = requests.post(api_url, json=payload, headers=headers)
-
-        if response.status_code == 200:
-            return HttpResponse("success")
-        else:
-            return HttpResponse(f"Error: {response.text}", status=response.status_code)
-
-    return HttpResponse("Invalid request method", status=405)
-
-    # response = requests.post(api_url, json=request, headers=headers)
-    # return HttpResponse("success")
+    # Assume the total price is already calculated and stored in the session
+    total_price = request.session.get('total_price', None)
+    if not total_price:
+        # Redirect to a previous page if total price is missing
+        return redirect('book_event')
+    event = Event.objects.get(id=event_id)
+    return render(request, 'pay.html', {'total_price': total_price}, {'event': event})
 
 
 
@@ -138,3 +111,62 @@ def logout_user(request):
     logout(request)
     messages.success(request, "Logged out successfully!")
     return redirect('login')
+
+
+
+def process_payment(request):
+    if request.method == 'POST':
+        mpesa_number = request.POST.get('mpesa_number')
+        total_price = request.session.get('total_price', None)
+
+        if not mpesa_number or not total_price:
+            return JsonResponse({'error': 'Invalid payment details.'}, status=400)
+
+        # Safaricom M-Pesa API credentials
+        consumer_key = 'your_consumer_key'
+        consumer_secret = 'your_consumer_secret'
+        access_token_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+        stk_push_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+
+        # Step 1: Get access token
+        response = requests.get(
+            access_token_url,
+            auth=(consumer_key, consumer_secret)
+        )
+        access_token = response.json().get('access_token')
+
+        if not access_token:
+            return JsonResponse({'error': 'Unable to authenticate with M-Pesa.'}, status=500)
+
+        # Step 2: Send STK Push
+        headers = {'Authorization': f'Bearer {access_token}'}
+        payload = {
+            "BusinessShortCode": 174379,
+            "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjQxMjA5MDA0MjI1",
+            "Timestamp": "20241209004225",
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": total_price,
+            "PartyA": 254708374149,
+            "PartyB": 174379,
+            "PhoneNumber": 254708374149,
+            "CallBackURL": "https://mydomain.com/path",
+            "AccountReference": "Event Booking",
+            "TransactionDesc": "Ticket Payment"
+        }
+
+        mpesa_response = requests.post(stk_push_url, json=payload, headers=headers)
+
+        if mpesa_response.status_code == 200:
+            return redirect('payment_success')  # Redirect to success page
+        else:
+            return JsonResponse({'error': 'Payment failed. Please try again later.'}, status=500)
+
+
+
+
+def payment_callback(request):
+    if request.method == 'POST':
+        data = request.body
+        # Process the callback data from M-Pesa
+        print(data)  # For debugging; you should log this in production
+        return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Success'})

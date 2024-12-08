@@ -83,11 +83,14 @@ WSGI_APPLICATION = 'EVENT_BOOKING_PLATFORM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'events_booking',
+        'NAME': 'events',
         'USER':'root',
         'PASSWORD':'',
         'HOST':'localhost',
-        'PORT':'3306'
+        'PORT':'3306',
+'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
