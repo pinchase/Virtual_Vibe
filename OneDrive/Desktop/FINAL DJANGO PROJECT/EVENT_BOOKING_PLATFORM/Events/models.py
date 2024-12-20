@@ -13,7 +13,7 @@ class Booking(models.Model):
     user_name = models.CharField(max_length=100)
     user_email = models.EmailField()
     number_of_tickets = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, db_column='total_price')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, db_column='total_price')
     # booking_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

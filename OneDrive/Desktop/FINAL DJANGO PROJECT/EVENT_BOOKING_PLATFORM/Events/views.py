@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import  JsonResponse
 import requests
 from requests.auth import HTTPBasicAuth
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 from . credentials import MpesaAccessToken, LipanaMpesaPpassword
 from django.contrib.auth import authenticate, login, logout
@@ -25,32 +26,41 @@ def book_event(request, event_id):
         number_of_tickets = int(request.POST['number_of_tickets'])
         total_price = event.price * number_of_tickets if event.price > 0 else 0
 
+        # Create and save the booking object
         booking = Booking(
             event=event,
             user_name=request.POST['user_name'],
             user_email=request.POST['user_email'],
             number_of_tickets=number_of_tickets,
-            price=total_price
+            price=total_price  # Ensure the Booking model supports a 'price' field
         )
         booking.save()
 
+        # Store total_price in the session for use in the pay view
+        request.session['total_price'] = float(total_price)  # Convert to float for JSON serialization
+
+        # Redirect to the pay view with the event_id
         return redirect('pay', event_id=event.id)
 
     # For GET request, render the template
     print("GET request received.")
     return render(request, 'book_event.html', {'event': event})
 
+from django.shortcuts import render, redirect, get_object_or_404
 
-
-def pay(request,event_id):
-
+def pay(request, event_id):
     # Assume the total price is already calculated and stored in the session
-    total_price = request.session.get('total_price', None)
+    total_price = request.session.get('total_price')
     if not total_price:
-        # Redirect to a previous page if total price is missing
-        return redirect('book_event')
-    event = Event.objects.get(id=event_id)
-    return render(request, 'pay.html', {'total_price': total_price}, {'event': event})
+        # Redirect to a previous page if the total price is missing
+        return redirect('book_event', event_id=event_id)
+
+    # Retrieve the event or return a 404 if it doesn't exist
+    event = get_object_or_404(Event, id=event_id)
+
+    # Pass both total_price and event_id to the template
+    return render(request, 'pay.html', {'total_price': total_price, 'event': event})
+
 
 
 
@@ -162,7 +172,16 @@ def process_payment(request):
             return JsonResponse({'error': 'Payment failed. Please try again later.'}, status=500)
 
 
+def submit_contact(request):
+    if request.method == 'POST':
+        # Handle form submission here (e.g., save data)
+        return HttpResponse("Contact form submitted successfully!")
 
+    # Redirect to the same view with a trailing slash if accessed without one
+    if not request.path.endswith('/'):
+        return HttpResponseRedirect(request.path + '/')
+
+    return render(request, 'contact_us.html')
 
 def payment_callback(request):
     if request.method == 'POST':
@@ -170,3 +189,22 @@ def payment_callback(request):
         # Process the callback data from M-Pesa
         print(data)  # For debugging; you should log this in production
         return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Success'})
+
+
+@login_required
+def user_dashboard(request):
+    # Get the logged-in user's bookings
+    user = request.user
+    recent_bookings = Booking.objects.filter(user=user).order_by('-date')[:5]  # Fetch the 5 most recent bookings
+
+    # Other user details (e.g., name, email)
+    user_details = {
+        "username": user.username,
+        "email": user.email,
+    }
+
+    context = {
+        "user_details": user_details,
+        "recent_bookings": recent_bookings,
+    }
+    return render(request, 'dashboard.html', context)

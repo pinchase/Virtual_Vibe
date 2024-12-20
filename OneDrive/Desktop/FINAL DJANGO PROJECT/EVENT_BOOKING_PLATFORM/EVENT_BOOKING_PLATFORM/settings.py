@@ -140,3 +140,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_URL = '/login/'
 
+# myproject/settings.py
+
+APPEND_SLASH = False

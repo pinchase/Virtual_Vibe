@@ -1,20 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Check-out</title>
+      {% block styles %}
+<link rel="stylesheet" href="{% static 'css/pay.css' %}">
+{% endblock %}
 </head>
 <body>
-    <h2>Payment Details</h2>
-    <p>Event: {{ event.name }}</p>
-    <p>Total Price: Ksh {{ event.total_price }}</p>
-    
-    <!-- M-Pesa payment button (you could add more payment methods here) -->
-    <form action="{% url 'mpesa_payment' event_id=event.id %}" method="POST">
-        {% csrf_token %}
-        <label for="mpesa_number">Enter your M-Pesa number:</label>
-        <input type="text" name="mpesa_number" required>
-        <button type="submit" class="btn btn-success">Pay with M-Pesa</button>
-    </form>
-    
+    <div class="container">
+        <h2>Payment Details</h2>
+        <p>Event: <span class="bold"> {{ event.name }}</span></p>
+        <p>Total Price: <span class="bold">Ksh {{ total_price }}</span></p>
+        
+        <!-- M-Pesa payment button (you could add more payment methods here) -->
+        <form action="{% url 'pay' event_id=event.id %}" method="POST">
+            {% csrf_token %}
+            <label for="mpesa_number">Enter your M-Pesa number:</label>
+            <input type="text" name="mpesa_number" id="mpesa_number" required>
+            <button type="submit" class="btn btn-success">Pay with M-Pesa</button>
+        </form>
+    </div>
 </body>
 </html>

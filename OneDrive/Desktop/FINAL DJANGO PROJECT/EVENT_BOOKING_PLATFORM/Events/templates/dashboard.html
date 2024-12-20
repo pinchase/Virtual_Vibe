@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>Email: {{ user.email }}</p>
+    
+    <h2>Your Recent Bookings</h2>
+    <ul>
+        {% for booking in recent_bookings %}
+            <li>
+                Event: {{ booking.event.name }} <br>
+                Date: {{ booking.date }} <br>
+                Total Price: {{ event.price }} KES
+            </li>
+        {% empty %}
+            <li>You have no recent bookings.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

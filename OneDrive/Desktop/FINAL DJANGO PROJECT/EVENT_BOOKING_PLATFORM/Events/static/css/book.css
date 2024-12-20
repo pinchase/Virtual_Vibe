@@ -22,7 +22,7 @@ p {
     font-size: 1rem;
     margin: 10px 0;
     text-align: center;
-    color: rgba(0, 255, 34, 0.5);
+    color: rgb(15, 23, 3);
     font-weight: bold;
 }
 
@@ -56,7 +56,7 @@ form input {
 }
 
 /* Button styles */
-form button a{
+form button {
     display: block;
     width: 100%;
     padding: 10px;
@@ -71,7 +71,7 @@ form button a{
 
 }
 
-form button a:hover {
+form button :hover {
     background-color: rgba(51, 51, 51, 0.84);
 }
 

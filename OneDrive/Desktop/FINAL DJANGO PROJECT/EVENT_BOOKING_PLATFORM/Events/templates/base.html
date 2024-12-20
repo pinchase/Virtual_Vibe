@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{% static 'images/flaticon.jpg' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <style>
         
@@ -95,7 +96,7 @@
             border-radius: 8px;
         }
   .mines{
-      color: #4CAF50;
+      color: #03fa1c;
       font-size:22px;
       font-style: italic;
       
@@ -396,11 +397,21 @@ button:hover {
 
 /* Footer Styles */
 .footer {
-  background-color:  #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  text-align: center;
+  background-color: #2e2e2e;
+    color: #f4f4f4;
+    padding: 20px;
     
+}
+/* Style for contact icons */
+.contact-details i {
+    margin-right: 10px;
+    color: #4CAF50;
+}
+
+/* Style the contact text */
+.contact-details p {
+    font-size: 16px;
+    color: #ffffff;
 }
 
 .footer-container {
@@ -428,7 +439,25 @@ button:hover {
   font-size: 20px;
   margin-bottom: 15px;
 }
+{#* Quick Links Styling */#}
+.quick-links {
+    list-style: none;
+    padding: 0;
+}
 
+.quick-links li {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.quick-links a {
+    color: #333;
+    text-decoration: none;
+}
+
+.quick-links a:hover {
+    color: #4CAF50;
+}
 .footer-links ul {
   list-style: none;
   padding: 0;
@@ -436,19 +465,18 @@ button:hover {
 }
 
 .footer-links ul li {
-  margin-bottom: 8px;
-    text-decoration: none;
+  font-size: 18px;
+    margin-bottom: 10px;
 }
 
 .footer-links ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
+    color: #ffffff;
+    text-decoration: none;
   transition: color 0.3s;
 }
 
 .footer-links ul li a:hover {
-  color: black;
+  color: #4CAF50;
 }
 
 .footer-contact p {
@@ -475,7 +503,25 @@ button:hover {
     text-align: center;
   }
 }
-        
+   /* Footer with columns */
+footer .footer-links {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+footer .footer-links div {
+    width: 30%;
+    margin: 10px 0;
+}
+
+/* Stack footer items on smaller screens */
+@media (max-width: 768px) {
+    footer .footer-links div {
+        width: 100%;
+    }
+}
+     
       
 
     </style>
@@ -507,11 +553,19 @@ button:hover {
         <a href="{% url 'about' %}">About</a>
         <a href="{% url 'contact_us' %}">Contact</a>
           
-          
+{#          {% if user.is_authenticated %}#}
+{#    <a href="{% url 'user_dashboard' %}">Dashboard</a>#}
+{#    <a href="{% url 'logout' %}">Logout</a>#}
+{#{% else %}#}
+{#    <a href="{% url 'login' %}">Login</a>#}
+{#{% endif %}#}
+
           {% if user.is_authenticated %}
+              <a href="{% url 'user_dashboard' %}">Dashboard</a>
         <p class="mines">Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
     {% else %}
         <a href="{% url 'login' %}" class="btn btn-success">Login</a> | <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+              <a href="{% url 'user_dashboard' %}">Dashboard</a>
     {% endif %}
           
     </nav>
@@ -590,21 +644,20 @@ button:hover {
 
     <div class="footer-links">
       <h3>Quick Links</h3>
-      <ul>
-        <li><a href="{% url 'index' %}">Home</a></li>
-        <li><a href="{% url 'about' %}">About Us</a></li>
-        <li><a href="{% url 'event_list' %}">Events</a></li>
-        <li><a href="{% url 'contact_us' %}">Contact</a></li>
-        <li><a href="#">Support</a></li>
-      </ul>
+  <ul class="quick-links">
+    <li><i class="fa fa-home"></i><a href="{% url 'index' %}">Home</a></li>
+    <li><i class="fa fa-info-circle"></i><a href="{% url 'about' %}">About Us</a></li>
+    <li><i class="fa fa-calendar"></i><a href="{% url 'event_list' %}">Events</a></li>
+</ul>
     </div>
 
-    <div class="footer-contact">
-      <h3>Contact Us</h3>
-      <p>Email: ideas8613@gmail.com</p>
-      <p>Phone: +123-456-7890</p>
-      <p>Location: Nairobi, Kenya</p>
-    </div>
+   <!-- Contact Section with Icons -->
+<div class="contact-details">
+    <p><i class="fa fa-envelope"></i> Email: ideas8613@gmail.com</p>
+    <p><i class="fa fa-phone"></i> Phone: +123-456-7890</p>
+    <p><i class="fa fa-map-marker"></i> Location: Nairobi, Kenya</p>
+</div>
+
   </div>
 
   <div class="footer-bottom">
